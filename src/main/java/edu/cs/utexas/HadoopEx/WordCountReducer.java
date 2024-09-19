@@ -19,4 +19,7 @@ public class WordCountReducer extends  Reducer<Text, IntWritable, Text, IntWrita
        
        context.write(text, new IntWritable(sum));
    }
+
+   /* Print out the top five results or store them in a folder/file. The content of the file should include the top-5
+but must not be written in order in that file */
 }
