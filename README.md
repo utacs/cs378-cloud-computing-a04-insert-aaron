@@ -62,6 +62,14 @@ Running as Java Application:
 
 ```java -jar target/MapReduce-WordCount-example-0.1-SNAPSHOT-jar-with-dependencies.jar SOME-Text-Fiel.txt  output``` 
 
+``` Task 1 Run: ```
+java -jar target/MapReduce-WordCount-example-0.1-SNAPSHOT-jar-with-dependencies.jar taxi-data-sorted-large.csv t1_result.txt 
+
+``` Task 2 Run: ```
+java -jar target/MapReduce-WordCount-example-0.1-SNAPSHOT-jar-with-dependencies.jar taxi-data-sorted-large.csv t2_errFra.txt t2_top5.txt 
+
+
+
 Or has hadoop application
 
 ```hadoop jar your-hadoop-application.jar edu.cs.utexas.HadoopEx.WordCount arg0 arg1 ... ```

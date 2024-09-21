@@ -7,10 +7,12 @@ import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 
-public class WordCountMapper extends Mapper<Object, Text, Text, IntWritable> {
+public class WordCountMapper extends Mapper<Object, Text, Text, IntPairWritable> {
 
 	// Create a counter and initialize with 1
-	private final IntWritable counter = new IntWritable(1);
+	// private final IntWritable counter = new IntWritable(1);
+	int trip = 1;
+	int error = 0;
 	// Create a hadoop text object to store words
 	private Text word = new Text();
 
@@ -23,30 +25,30 @@ public class WordCountMapper extends Mapper<Object, Text, Text, IntWritable> {
 			return;
 		}
 
-		 // Extracting GPS coordinates
+		// Extracting GPS coordinates
 		String pickupLatitude = parsedText[6];
-        String pickupLongitude = parsedText[7];
-        String dropoffLatitude = parsedText[8];
-        String dropoffLongitude = parsedText[9];
+		String pickupLongitude = parsedText[7];
+		String dropoffLatitude = parsedText[8];
+		String dropoffLongitude = parsedText[9];
 
 		if(invalidGPS(pickupLatitude, pickupLongitude, dropoffLatitude, dropoffLongitude)){
 			String[] timeFormat = parsedText[3].split(":");
 			int hourInt = Integer.parseInt(timeFormat[0]); // 00 -> returns 0.
-			if(hourInt > -1 && hourInt < 24){
-				word.set(timeFormat[0]);
-				context.write(word, counter);
-			}else{
-				return; // Skip since time format is not supported.
-			}
+			/* Task 1 */
+				// if(hourInt > -1 && hourInt < 24){
+				// 	word.set(timeFormat[0]);
+				// 	context.write(word, counter);
+				// }else{
+				// 	return; // Skip since time format is not supported.
+				// }
+			error = 1;
 		}
 
-		
-		/* Starter code */
-		// StringTokenizer itr = new StringTokenizer(value.toString());
-		// while (itr.hasMoreTokens()) {
-		// 	word.set(itr.nextToken());
-		// 	context.write(word, counter);
-		// }
+		/* Task 2 */	
+		IntPairWritable dataPair = new IntPairWritable(error, trip);
+		word.set(parsedText[1]);
+		context.write(word, dataPair); 
+
 	}
 
 	// Helper function to check if any of the GPS coordinates contain errors (zeros or empty strings)
