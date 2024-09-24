@@ -66,8 +66,11 @@ Running as Java Application:
 java -jar target/MapReduce-WordCount-example-0.1-SNAPSHOT-jar-with-dependencies.jar taxi-data-sorted-large.csv t1_result.txt 
 
 ``` Task 2 Run: ```
-java -jar target/MapReduce-WordCount-example-0.1-SNAPSHOT-jar-with-dependencies.jar taxi-data-sorted-large.csv t2_errFra.txt t2_top5.txt 
+java -jar target/MapReduce-WordCount-example-0.1-SNAPSHOT-jar-with-dependencies.jar taxi-data-sorted-large.csv task2ALL task2top ---> large data
 
+
+
+java -jar target/MapReduce-WordCount-example-0.1-SNAPSHOT-jar-with-dependencies.jar taxi-data-sorted-small.csv task2ALL.txt task2top ---> small data
 
 
 Or has hadoop application

@@ -1,5 +1,6 @@
 package edu.cs.utexas.HadoopEx;
 
+import org.apache.hadoop.io.FloatWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 
@@ -9,7 +10,7 @@ import java.util.PriorityQueue;
 
 import org.apache.log4j.Logger;
 
-public class TopKMapper extends Mapper<Text, IntPairWritable, Text, IntPairWritable> {
+public class TopKMapper extends Mapper<Text, Text, Text, FloatWritable> {
     private Logger logger = Logger.getLogger(TopKMapper.class);
 
 
@@ -26,27 +27,50 @@ public class TopKMapper extends Mapper<Text, IntPairWritable, Text, IntPairWrita
 	 * @param key
 	 * @param value a float value stored as a string
 	 */
-	public void map(Text key, IntPairWritable value, Context context)
+	public void map(Text key, Text value, Context context)
 			throws IOException, InterruptedException {
 
+		/* Task 2 */
 
-		pq.add(new DriverInfo(new Text(key), new IntPairWritable(value.getTotalErrors(), value.getTotalTrips())));
+			String [] parts = value.toString().split("-");
+			int firstInteger = Integer.parseInt(parts[0]);
+			int secondInteger = Integer.parseInt(parts[1]);
 
-		if (pq.size() > 3) {
-			pq.poll();
-		}
+			pq.add(new DriverInfo(new Text(key), new IntPairWritable(firstInteger, secondInteger)));
+
+			if (pq.size() > 5) {
+				pq.poll();
+			}
+		
+		/* Task 3 */
+
+			// if (pq.size() > 10){
+			// 	pq.poll();
+			// }
+
 	}
 
 	public void cleanup(Context context) throws IOException, InterruptedException {
 
-
 		while (pq.size() > 0) {
-			WordAndCount wordAndCount = pq.poll();
-			String [] currentInfo = wordAndCount.getInfo().toString().split(",");
-            int currentRatio = (int) (Float.parseFloat(currentInfo[0]) / Integer.parseInt(currentInfo[1]));
-			Text ratioText = new Text(String.valueOf(currentRatio));
-			context.write(wordAndCount.getWord(), ratioText);
-			logger.info("TopKMapper PQ Status: " + pq.toString());
-		}
+			DriverInfo driverInfo = pq.poll();
+
+			/* Task 2 */
+				int gpsErrors = driverInfo.getTotalErrors();
+				int trips = driverInfo.getTotalTrips();
+				
+				float currentRatio = (float) gpsErrors / trips;
+
+				context.write(driverInfo.getDriverID(), new FloatWritable(currentRatio) );
+				logger.info("TopKMapper PQ Status: " + pq.toString());
+
+			/* Task 3  */
+				// 	float totalBank = driverInfo.getTotalBank();
+				//     int totalSeconds = driverInfo.getTotalSeconds();
+				// 	float earningPerMin = totalBank / (totalSeconds / 60);
+				
+				//     context.write(driverInfo.getDriverID(), new FloatWritable(earningPerMin));
+				// logger.info("TopKMapper PQ Status: " + pq.toString());
+			}
 	}
 }

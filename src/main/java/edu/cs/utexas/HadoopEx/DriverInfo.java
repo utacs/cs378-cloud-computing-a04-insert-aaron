@@ -1,4 +1,5 @@
 package edu.cs.utexas.HadoopEx;
+import org.apache.hadoop.io.FloatWritable;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
 
@@ -6,23 +7,52 @@ public class DriverInfo implements Comparable<DriverInfo> {
     private final Text DriverID;
     private final int gpsErrors;
     private final int totalTrips;
+    private final FloatWritable avgErrorRatio;
+    private final float totalBank;
+    private final int totalSeconds;
 
     public DriverInfo(Text DriverID, IntPairWritable values) {
        this.DriverID = DriverID;
        this.gpsErrors = values.getTotalErrors();
        this.totalTrips = values.getTotalTrips();
+       this.avgErrorRatio = new FloatWritable(0);
+       this.totalBank = values.getTotalBank();
+       this.totalSeconds = values.getTotalSeconds();
+    }
+
+    public DriverInfo(Text DriverID, FloatWritable avgErrorRatio) {
+        this.DriverID = DriverID;
+        this.avgErrorRatio = avgErrorRatio;
+        this.gpsErrors = 0;
+        this.totalTrips = 0;
+        this.totalBank = 0;
+        this.totalSeconds = 0;
+    }
+
+    public FloatWritable getAvgErrorRatio() {
+        return avgErrorRatio;
     }
 
     public Text getDriverID() {
         return DriverID;
     }
 
+    // Task 2
     public int getTotalErrors() {
         return gpsErrors;
     }
 
     public int getTotalTrips() {
         return totalTrips;
+    }
+
+    // Task 3
+    public float getTotalBank() {
+        return totalBank;
+    }
+
+    public int getTotalSeconds() {
+        return totalSeconds;
     }
     /**
      * Compares two sort data objects by their value.
