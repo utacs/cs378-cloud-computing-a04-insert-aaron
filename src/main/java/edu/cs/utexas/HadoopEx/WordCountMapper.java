@@ -47,10 +47,10 @@ public class WordCountMapper extends Mapper<Object, Text, Text, IntPairWritable>
 			error = 1;
 		}
 
-		/* Task 2 */	
-		IntPairWritable dataPair = new IntPairWritable(error, trip);
-		word.set(parsedText[1]);
-		context.write(word, dataPair); 
+		// /* Task 2 */	
+		// IntPairWritable dataPair = new IntPairWritable(error, trip);
+		// word.set(parsedText[1]);
+		// context.write(word, dataPair); 
 
 
 		/* Task 3  */
