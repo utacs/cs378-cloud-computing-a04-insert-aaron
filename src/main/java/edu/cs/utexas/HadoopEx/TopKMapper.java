@@ -9,17 +9,15 @@ import java.util.PriorityQueue;
 
 
 import org.apache.log4j.Logger;
+import java.util.HashMap;
+import java.util.Map;
+// import edu.cs.utexas.HadoopEx.MapReduceTest.Map;
 
 public class TopKMapper extends Mapper<Text, Text, Text, FloatWritable> {
     private Logger logger = Logger.getLogger(TopKMapper.class);
 
 
-	private PriorityQueue<DriverInfo> pq;
-
-	public void setup(Context context) {
-		pq = new PriorityQueue<>();
-
-	}
+	private PriorityQueue<DriverInfo> pq = new PriorityQueue<>(5);
 
 	/**
 	 * Reads in results from the first job and filters the topk results
@@ -40,29 +38,32 @@ public class TopKMapper extends Mapper<Text, Text, Text, FloatWritable> {
 
 
 			// Calculate error ratio
+			float errorRatio = (float) gpsErrors/ trips;
 
-			DriverInfo newDriver = new DriverInfo(new Text(key), new IntPairWritable(gpsErrors, trips));
+			// DriverInfo newDriver = new DriverInfo(new Text(key), new FloatWritable(errorRatio));
 
-			// pq.add(new DriverInfo(new Text(key), new FloatWritable(errorRatio)));
 
-			boolean found = false;
-			for (DriverInfo driver : pq) {
-				if (driver.getDriverID().equals(newDriver.getDriverID())) {
-					driver.updateTotals(gpsErrors, trips);  // Assuming updateTotals is a method that adds totals
-					found = true;
-					break;
-				}
-			}
+			// boolean found = false;
+			// for (DriverInfo driver : pq) {
+			// 	if (driver.getDriverID().equals(newDriver.getDriverID())) {
+			// 		driver.updateTotals(gpsErrors, trips);  // Assuming updateTotals is a method that adds totals
+			// 		found = true;
+			// 		break;
+			// 	}
+			// }
 		
-			// If the driver is not in the priority queue, add it
-			if (!found) {
-				pq.add(newDriver);
-			}
+			// // If the driver is not in the priority queue, add it
+			// if (!found) {
+			// 	pq.add(newDriver);
+			// }
+
+			pq.add(new DriverInfo(new Text(key), new FloatWritable(errorRatio)));
 
 			if (pq.size() > 5) {
 				pq.poll();
 			}
-		
+
+			
 		/* Task 3 */
 
 			// if (pq.size() > 10){

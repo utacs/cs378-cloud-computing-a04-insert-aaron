@@ -64,11 +64,9 @@ public class DriverInfo implements Comparable<DriverInfo> {
      * @param other
      * @return 0 if equal, negative if this < other, positive if this > other
      */
-    @Override  // For sorting in descending order of driver error ratio
+    @Override  
         public int compareTo(DriverInfo other) {
-            int currentRatio = totalTrips != 0 ? (int) (((float) getTotalErrors() / getTotalTrips()) * 100) : 0;
-            int otherRatio = other.getTotalTrips() != 0 ? (int) (((float) other.getTotalErrors() / other.getTotalTrips()) * 100) : 0;
-            return Integer.compare(currentRatio, otherRatio);
+            return Float.compare(this.avgErrorRatio.get(), other.avgErrorRatio.get());
         }
 
 
