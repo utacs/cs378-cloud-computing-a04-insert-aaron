@@ -33,10 +33,31 @@ public class TopKMapper extends Mapper<Text, Text, Text, FloatWritable> {
 		/* Task 2 */
 
 			String [] parts = value.toString().split("-");
-			int firstInteger = Integer.parseInt(parts[0]);
-			int secondInteger = Integer.parseInt(parts[1]);
 
-			pq.add(new DriverInfo(new Text(key), new IntPairWritable(firstInteger, secondInteger)));
+			int gpsErrors = Integer.parseInt(parts[0]);
+			int trips = Integer.parseInt(parts[1]);
+			// logger.info("GPS: " + gpsErrors + "Trips: "+ trips);
+
+
+			// Calculate error ratio
+
+			DriverInfo newDriver = new DriverInfo(new Text(key), new IntPairWritable(gpsErrors, trips));
+
+			// pq.add(new DriverInfo(new Text(key), new FloatWritable(errorRatio)));
+
+			boolean found = false;
+			for (DriverInfo driver : pq) {
+				if (driver.getDriverID().equals(newDriver.getDriverID())) {
+					driver.updateTotals(gpsErrors, trips);  // Assuming updateTotals is a method that adds totals
+					found = true;
+					break;
+				}
+			}
+		
+			// If the driver is not in the priority queue, add it
+			if (!found) {
+				pq.add(newDriver);
+			}
 
 			if (pq.size() > 5) {
 				pq.poll();
@@ -55,14 +76,10 @@ public class TopKMapper extends Mapper<Text, Text, Text, FloatWritable> {
 		while (pq.size() > 0) {
 			DriverInfo driverInfo = pq.poll();
 
-			/* Task 2 */
-				int gpsErrors = driverInfo.getTotalErrors();
-				int trips = driverInfo.getTotalTrips();
-				
-				float currentRatio = (float) gpsErrors / trips;
+			logger.info("Driver: " + driverInfo.getDriverID() + " AvgErrorRate: " + driverInfo.getAvgErrorRatio());
 
-				context.write(driverInfo.getDriverID(), new FloatWritable(currentRatio) );
-				logger.info("TopKMapper PQ Status: " + pq.toString());
+			/* Task 2 */
+			context.write(driverInfo.getDriverID(), driverInfo.getAvgErrorRatio());		
 
 			/* Task 3  */
 				// 	float totalBank = driverInfo.getTotalBank();

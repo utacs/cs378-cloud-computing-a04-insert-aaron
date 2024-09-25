@@ -51,6 +51,9 @@ public class WordCount extends Configured implements Tool {
 
 			// specify output types
 			job.setOutputKeyClass(Text.class);
+			/* Task 1 */
+			// job.setOutputValueClass(IntWritable.class);
+			/* Task 2 & 3 */
 			job.setOutputValueClass(IntPairWritable.class);
 
 			// specify input and output directories
@@ -63,6 +66,9 @@ public class WordCount extends Configured implements Tool {
 			if (!job.waitForCompletion(true)) {
 				return 1;
 			}
+			// /* Task 1 only  */
+			// return (job.waitForCompletion(true) ? 0 : 1);
+
 
 			Job job2 = new Job(conf, "ErrorRatioi");
 			job2.setJarByClass(WordCount.class);
@@ -88,7 +94,9 @@ public class WordCount extends Configured implements Tool {
 			job2.setOutputFormatClass(TextOutputFormat.class);
 
 
+			/* Task 2 & 3 */
 			return (job2.waitForCompletion(true) ? 0 : 1);
+
 
 		} catch (InterruptedException | ClassNotFoundException | IOException e) {
 			System.err.println("Error during mapreduce job.");

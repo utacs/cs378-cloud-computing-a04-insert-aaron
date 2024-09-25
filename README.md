@@ -20,6 +20,35 @@
 
 # Add your Project REPORT HERE 
 
+Task 1 Results: 
+   00      66378
+   01      47585
+   02      38488
+   03      30002
+   04      23398
+   05      20852
+   06      43037
+   07      76217
+   08      96432
+   09      95573
+   10      88381
+   11      93047
+   12      99217
+   13      98879
+   14      102711
+   15      101213
+   16      93689
+   17      112113
+   18      131502
+   19      130576
+   20      115844
+   21      109770
+   22      104044
+   23      81051
+
+Task 2 Results:
+   
+
 
 # Project Template
 
@@ -63,7 +92,7 @@ Running as Java Application:
 ```java -jar target/MapReduce-WordCount-example-0.1-SNAPSHOT-jar-with-dependencies.jar SOME-Text-Fiel.txt  output``` 
 
 ``` Task 1 Run: ```
-java -jar target/MapReduce-WordCount-example-0.1-SNAPSHOT-jar-with-dependencies.jar taxi-data-sorted-large.csv t1_result.txt 
+java -jar target/MapReduce-WordCount-example-0.1-SNAPSHOT-jar-with-dependencies.jar taxi-data-sorted-small.csv t1_result.txt 
 
 ``` Task 2 Run: ```
 java -jar target/MapReduce-WordCount-example-0.1-SNAPSHOT-jar-with-dependencies.jar taxi-data-sorted-large.csv task2ALL task2top ---> large data

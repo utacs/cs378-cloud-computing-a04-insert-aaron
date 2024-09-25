@@ -6,14 +6,22 @@ import java.util.StringTokenizer;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
+import org.apache.log4j.Logger;
+
 import edu.cs.utexas.HadoopEx.IntPairWritable;
 
+
+// /* Task 1 */
+// public class WordCountMapper extends Mapper<Object, Text, Text, IntWritable> {
+/* Task 2 & 3 WCM */
 public class WordCountMapper extends Mapper<Object, Text, Text, IntPairWritable> {
+
+
+	 private Logger logger = Logger.getLogger(WordCountMapper.class);
 
 	// Create a counter and initialize with 1
 	// private final IntWritable counter = new IntWritable(1);
 	int trip = 1;
-	int error = 0;
 	// Create a hadoop text object to store words
 	private Text word = new Text();
 
@@ -23,34 +31,53 @@ public class WordCountMapper extends Mapper<Object, Text, Text, IntPairWritable>
 		String[] parsedText = value.toString().split(","); //value is line of Hadoop text
 
 		if(isInvalidLine(parsedText)){
+		    logger.info("Invalid line: " + value);
 			return;
 		}
-	
+
+		int error = 0;
+
+
+
+		// logger.info("Before GPS");
 		// Extracting GPS coordinates
 		String pickupLatitude = parsedText[6];
 		String pickupLongitude = parsedText[7];
 		String dropoffLatitude = parsedText[8];
 		String dropoffLongitude = parsedText[9];
 
+		// logger.info("AFter GPS try");
+
 		if(invalidGPS(pickupLatitude, pickupLongitude, dropoffLatitude, dropoffLongitude)){
-			String[] dateInfo = parsedText[2].split(" "); // dateInfo format = 2013-01-01 00:02:00
-			String timeFormat = dateInfo[1];
-			String [] hourTime = timeFormat.split(":");
-			int hourInt = Integer.parseInt(hourTime[0]); // 00 -> returns 0.
 			/* Task 1 */
-				// if(hourInt > -1 && hourInt < 24){
-				// 	word.set(timeFormat[0]);
-				// 	context.write(word, counter);
-				// }else{
-				// 	return; // Skip since time format is not supported.
-				// }
+				// String[] dateInfo = parsedText[2].split(" "); // dateInfo format = 2013-01-01 00:02:00
+				// String timeFormat = dateInfo[1];
+				// logger.info("TimeFormat: " + timeFormat);
+
+				// String [] hourTime = timeFormat.split(":");
+				// int hourInt = Integer.parseInt(hourTime[0]); // 00 -> returns 0.
+				// logger.info("\nhour: " + hourInt);
+				
+					// if(hourInt > -1 && hourInt < 24){
+					// 	// logger.info("NINCEEEE");
+					// 	word.set(hourTime[0]);
+					// 	context.write(word, new IntWritable(1));
+					// }
+					// return;
+			
+			/* Task 2 and 3 */
 			error = 1;
 		}
 
-		// /* Task 2 */	
-		// IntPairWritable dataPair = new IntPairWritable(error, trip);
-		// word.set(parsedText[1]);
-		// context.write(word, dataPair); 
+		// logger.info("PIZZZAAAA");
+
+		
+
+
+		/* Task 2 */	
+		IntPairWritable dataPair = new IntPairWritable(error, trip);
+		word.set(parsedText[0]);
+		context.write(word, dataPair); 
 
 
 		/* Task 3  */
@@ -62,13 +89,19 @@ public class WordCountMapper extends Mapper<Object, Text, Text, IntPairWritable>
 
 	// Helper function to check if any of the GPS coordinates contain errors (zeros or empty strings)
     private boolean invalidGPS(String pickupLat, String pickupLon, String dropoffLat, String dropoffLon) {
-		return pickupLat == null || pickupLon == null || dropoffLat == null || dropoffLon == null || 
-			   pickupLat.trim().equals("0") || pickupLon.trim().equals("0") || 
-			   dropoffLat.trim().equals("0") || dropoffLon.trim().equals("0") || 
-			   pickupLat.trim().equals("0.0") || pickupLon.trim().equals("0.0") || 
-			   dropoffLat.trim().equals("0.0") || dropoffLon.trim().equals("0.0") || 
-			   pickupLat.trim().isEmpty() || pickupLon.trim().isEmpty() || 
-			   dropoffLat.trim().isEmpty() || dropoffLon.trim().isEmpty();
+		try {
+			double pickupLatVal = Double.parseDouble(pickupLat);
+			double pickupLonVal = Double.parseDouble(pickupLon);
+			double dropoffLatVal = Double.parseDouble(dropoffLat);
+			double dropoffLonVal = Double.parseDouble(dropoffLon);
+	
+			// Check if any of the GPS values are 0.0 or empty
+			return pickupLatVal == 0.0 || pickupLonVal == 0.0 || 
+				   dropoffLatVal == 0.0 || dropoffLonVal == 0.0;
+		} catch (NumberFormatException e) {
+			// If the parsing fails, it means the value is not a valid number
+			return true;
+		}
 	}
 	
 

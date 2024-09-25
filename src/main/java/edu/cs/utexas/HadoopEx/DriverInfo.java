@@ -5,11 +5,11 @@ import org.apache.hadoop.io.Text;
 
 public class DriverInfo implements Comparable<DriverInfo> {
     private final Text DriverID;
-    private final int gpsErrors;
-    private final int totalTrips;
-    private final FloatWritable avgErrorRatio;
-    private final float totalBank;
-    private final int totalSeconds;
+    private  int gpsErrors;
+    private  int totalTrips;
+    private  FloatWritable avgErrorRatio;
+    private  float totalBank;
+    private  int totalSeconds;
 
     public DriverInfo(Text DriverID, IntPairWritable values) {
        this.DriverID = DriverID;
@@ -45,6 +45,11 @@ public class DriverInfo implements Comparable<DriverInfo> {
     public int getTotalTrips() {
         return totalTrips;
     }
+    
+    public void updateTotals(int gpsErrors, int trips) {
+        this.gpsErrors += gpsErrors;
+        this.totalTrips += trips;
+    }
 
     // Task 3
     public float getTotalBank() {
@@ -61,15 +66,9 @@ public class DriverInfo implements Comparable<DriverInfo> {
      */
     @Override  // For sorting in descending order of driver error ratio
         public int compareTo(DriverInfo other) {
-            int currentRatio = (int) (((float) getTotalErrors() / getTotalTrips()) * 100);
-            int otherRatio = (int) (((float) other.getTotalErrors() / other.getTotalErrors()) * 100);
-            int diff = currentRatio - otherRatio;
-            if (diff > 0) {
-                return 1;
-            } else if (diff < 0) {
-                return -1;
-            }
-            return 0;
+            int currentRatio = totalTrips != 0 ? (int) (((float) getTotalErrors() / getTotalTrips()) * 100) : 0;
+            int otherRatio = other.getTotalTrips() != 0 ? (int) (((float) other.getTotalErrors() / other.getTotalTrips()) * 100) : 0;
+            return Integer.compare(currentRatio, otherRatio);
         }
 
 
