@@ -33,22 +33,22 @@ public class WordCountReducer extends  Reducer<Text, IntPairWritable, Text, IntP
         //  }
 	   
       // Task 2
-        // int sumErrors = 0;  
-        // int sumTrips = 0;
+        int sumErrors = 0;  
+        int sumTrips = 0;
       
       // Task 3
-         float totalBank = 0;
-         int totalSeconds = 0;
+        //  float totalBank = 0;
+        //  int totalSeconds = 0;
 
         
         for (IntPairWritable value : values) {
             //Task 2
-              // sumErrors += value.getTotalErrors();   
-              // sumTrips += value.getTotalTrips();
+              sumErrors += value.getTotalErrors();   
+              sumTrips += value.getTotalTrips();
             
             // Task 3
-               totalBank += value.getTotalBank();
-               totalSeconds += value.getTotalSeconds();
+              //  totalBank += value.getTotalBank();
+              //  totalSeconds += value.getTotalSeconds();
         }
         
         /* Task 1 */
@@ -56,11 +56,17 @@ public class WordCountReducer extends  Reducer<Text, IntPairWritable, Text, IntP
 
 
         // Task 2
-            // context.write(text, new IntPairWritable(sumErrors, sumTrips));
+          if(sumTrips != 0){
+             context.write(text, new IntPairWritable(sumErrors, sumTrips));
+          }
 
        /* Task 3 */
-        //  logger.info("Key: " + text.toString() + "| Bank: " + totalBank + "| Seconds: "+totalSeconds);
-         context.write(text, new IntPairWritable(totalBank, totalSeconds));
+        // if(totalSeconds != 0){
+        //   // logger.info("Key: " + text.toString() + " | errorRate: " + (totalBank / totalSeconds));
+
+        //   context.write(text, new IntPairWritable(totalBank, totalSeconds));
+        // }
+         
    }
 
    /* Print out the top five results or store them in a folder/file. The content of the file should include the top-5

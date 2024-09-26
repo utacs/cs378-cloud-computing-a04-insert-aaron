@@ -81,13 +81,13 @@ public class WordCount extends Configured implements Tool {
 
 			// specify output types
 			job2.setOutputKeyClass(Text.class);
-			job2.setOutputValueClass(FloatWritable.class);
+			job2.setOutputValueClass(IntPairWritable.class);
 
 			// set the number of reducer to 1
 			job2.setNumReduceTasks(1);
 
 			// specify input and output directories
-			FileInputFormat.addInputPath(job2, new Path(args[1]));
+			FileInputFormat.addInputPath(job2, new Path(args[1] + "/part-r-00000"));
 			job2.setInputFormatClass(KeyValueTextInputFormat.class);
 
 			FileOutputFormat.setOutputPath(job2, new Path(args[2]));

@@ -13,11 +13,17 @@ public class DriverInfo implements Comparable<DriverInfo> {
 
     public DriverInfo(Text DriverID, IntPairWritable values) {
        this.DriverID = DriverID;
-       this.gpsErrors = values.getTotalErrors();
-       this.totalTrips = values.getTotalTrips();
-       this.errorRatio = (float) this.gpsErrors / this.totalTrips;
-       this.totalBank = values.getTotalBank();
-       this.totalSeconds = values.getTotalSeconds();
+         /* Task 2 */
+            this.gpsErrors = values.getTotalErrors();
+            this.totalTrips = values.getTotalTrips();
+            
+            this.errorRatio = (float) this.gpsErrors / this.totalTrips;
+
+       /* Task 3 */
+            // this.errorRatio = 
+            // this.totalBank = values.getTotalBank();
+            // this.totalSeconds = values.getTotalSeconds();
+            // this.errorRatio = (float) this.totalBank / this.totalSeconds;
     }
 
     // public DriverInfo(Text DriverID, FloatWritable avgErrorRatio) {
@@ -78,24 +84,24 @@ public class DriverInfo implements Comparable<DriverInfo> {
         public int compareTo(DriverInfo other) {
 
             /* Task 2 */
-                // int currentRatio = totalTrips != 0 ? (int) (((float) getTotalErrors() / getTotalTrips()) * 100) : 0;
-                // int otherRatio = other.getTotalTrips() != 0 ? (int) (((float) other.getTotalErrors() / other.getTotalTrips()) * 100) : 0;
-                // return Integer.compare(currentRatio, otherRatio);
+                int currentRatio = totalTrips != 0 ? (int) (((float) getTotalErrors() / getTotalTrips()) * 100) : 0;
+                int otherRatio = other.getTotalTrips() != 0 ? (int) (((float) other.getTotalErrors() / other.getTotalTrips()) * 100) : 0;
+                return Integer.compare(currentRatio, otherRatio);
             /* Task 3  */
-                float currentRatio = totalSeconds != 0 ? ((float) getTotalBank() / (getTotalSeconds() / 60 )) : 0;
-                float otherRatio = other.getTotalSeconds() != 0 ? ((float) other.getTotalBank() / (other.getTotalSeconds() / 60 )) : 0;
-                return Float.compare(currentRatio, otherRatio);
+                // float currentRatio = totalSeconds != 0 ? ((float) getTotalBank() / (getTotalSeconds() / 60 )) : 0;
+                // float otherRatio = other.getTotalSeconds() != 0 ? ((float) other.getTotalBank() / (other.getTotalSeconds() / 60 )) : 0;
+                // return Float.compare(currentRatio, otherRatio);
         }
 
 
         public String toString(){
             /* Task 2 */
-                // int currentRatio = (int) (((float) getTotalErrors() / getTotalTrips()) * 100);
-                // return "("+DriverID.toString() +" , "+ currentRatio+")";
+                int currentRatio = (int) (((float) getTotalErrors() / getTotalTrips()) * 100);
+                return "("+DriverID.toString() +" , "+ currentRatio+")";
             
             /* Task 3  */
-                float currentRate = totalSeconds != 0 ? ((float) getTotalBank() / (getTotalSeconds() / 60 )) : 0;
-                return "("+DriverID.toString() +" , "+ currentRate+")";
+                // float currentRate = totalSeconds != 0 ? ((float) getTotalBank() / (getTotalSeconds() / 60 )) : 0;
+                // return "("+DriverID.toString() +" , "+ currentRate+")";
 
         }
 }

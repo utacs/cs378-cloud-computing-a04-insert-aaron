@@ -31,15 +31,15 @@ public class TopKMapper extends Mapper<Text, Text, Text, IntPairWritable> {
 
 		/* Task 2 */
 
-			// String [] parts = value.toString().split("-");
+			String [] parts = value.toString().split("-");
 
-			// int gpsErrors = Integer.parseInt(parts[0]);
-			// int trips = Integer.parseInt(parts[1]);
+			int gpsErrors = Integer.parseInt(parts[0]);
+			int trips = Integer.parseInt(parts[1]);
 		
 
-			// DriverInfo newDriver = new DriverInfo(new Text(key), new IntPairWritable(gpsErrors, trips));
+			DriverInfo newDriver = new DriverInfo(new Text(key), new IntPairWritable(gpsErrors, trips));
 
-			// pq.add(newDriver);
+			pq.add(newDriver);
 
 
 			// if (pq.size() > 5){
@@ -49,20 +49,20 @@ public class TopKMapper extends Mapper<Text, Text, Text, IntPairWritable> {
 			
 		/* Task 3 */
 
-			String [] parts = value.toString().split("-");
+			// String [] parts = value.toString().split("-");
 
-			float totalBank = Float.parseFloat(parts[0]);
-			int totalSeconds = Integer.parseInt(parts[1]);
+			// float totalBank = Float.parseFloat(parts[0]);
+			// int totalSeconds = Integer.parseInt(parts[1]);
 
 
-			DriverInfo newDriver = new DriverInfo(new Text(key), new IntPairWritable(totalBank, totalSeconds));
+			// DriverInfo newDriver = new DriverInfo(new Text(key), new IntPairWritable(totalBank, totalSeconds));
 
-			pq.add(newDriver);
+			// pq.add(newDriver);
 			
-
-			if (pq.size() > 10){
-				pq.poll();
-			}
+			// /* Ask about this tmrw  */
+			// // if (pq.size() > 10){
+			// // 	pq.poll();
+			// // }
 
 	}
 
@@ -79,13 +79,13 @@ public class TopKMapper extends Mapper<Text, Text, Text, IntPairWritable> {
 
 				// int currentRatio = driverInfo.getTotalTrips() != 0 ? (int) (((float) driverInfo.getTotalErrors() / driverInfo.getTotalTrips()) * 100) : 0;
 
-				// logger.info("Driver: " + driverInfo.getDriverID() + " AvgErrorRate: " + currentRatio);
-				// context.write(driverInfo.getDriverID(), new IntPairWritable(driverInfo.getTotalErrors(), driverInfo.getTotalTrips()));		
+				context.write(driverInfo.getDriverID(), new IntPairWritable(driverInfo.getTotalErrors(), driverInfo.getTotalTrips()));		
 
 			/* Task 3  */
-				
-				context.write(driverInfo.getDriverID(), new IntPairWritable(driverInfo.getTotalBank(), driverInfo.getTotalSeconds()));
-				// logger.info("TopKMapper PQ Status: " + pq.toString());
+				// int currentRatio = driverInfo.getTotalSeconds() != 0 ? (int) (((float) driverInfo.getTotalBank() / driverInfo.getTotalSeconds()) * 100) : 0;
+				// // logger.info("Driver: " + driverInfo.getDriverID() + " AvgErrorRate: " + currentRatio);
+				// context.write(driverInfo.getDriverID(), new IntPairWritable(driverInfo.getTotalBank(), driverInfo.getTotalSeconds()));
+				// // logger.info("TopKMapper PQ Status: " + pq.toString());
 			}
 	}
 }

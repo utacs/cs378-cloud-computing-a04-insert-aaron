@@ -54,10 +54,19 @@ public class TopKReducer extends Reducer<Text, IntPairWritable, Text, FloatWrita
                 totalTrips += value.getTotalTrips(); 
             }
 
-            logger.info("CurrentDriver: " + currentDriver + ", totalErrors: " + totalErrors + ", totalTrips");
+            // logger.info("CurrentDriver: " + currentDriver + ", totalErrors: " + totalErrors + ", totalTrips: " + totalTrips);
 
             DriverInfo driver = new DriverInfo(new Text(key), new IntPairWritable(totalErrors, totalTrips));
-            topKDrivers.add(driver);
+            // topKDrivers.add(driver);
+
+            float errorRatio = (float) (totalErrors / totalTrips);
+
+            if (pq.size() < 5) {
+                pq.add(driver);
+            } else if (pq.peek().getErrorRatio() < errorRatio) {
+                pq.poll();
+                pq.add(driver);
+            }
 
         // Task 3
             // float totalBank = 0;
@@ -69,59 +78,60 @@ public class TopKReducer extends Reducer<Text, IntPairWritable, Text, FloatWrita
             // }
 
             // DriverInfo driver = new DriverInfo(new Text(key), new IntPairWritable(totalBank, totalSeconds));
-            // topKDrivers.add(driver);
+
+            // float errorRatio = (float) (totalBank / totalSeconds);
+
+            // // logger.info("Driver: " + driver.getDriverID() + " AvgErrorRate: " + errorRatio);
+
+
+            // if (pq.size() < 10) {
+            //     pq.add(driver);
+            // } else if (pq.peek().getErrorRatio() < errorRatio) {
+            //     pq.poll();
+            //     pq.add(driver);
+            // }
 
    }
 
 
     public void cleanup(Context context) throws IOException, InterruptedException {
-        // logger.info("TopKReducer cleanup cleanup.");
-        // logger.info("pq.size() is " + pq.size());
+        logger.info("TopKReducer cleanup cleanup.");
+        logger.info("pq.size() is " + pq.size());
 
-        // List<DriverInfo> values = new ArrayList<DriverInfo>(5);
+        List<DriverInfo> values = new ArrayList<DriverInfo>(5);
 
-        // while (pq.size() > 0) {
-        //     values.add(pq.poll());
-        // }
+        while (pq.size() > 0) {
+            values.add(pq.poll());
+        }
 
-        // logger.info("values.size() is " + values.size());
-        // logger.info(values.toString());
+        logger.info("values.size() is " + values.size());
+        logger.info(values.toString());
 
-
-        // // reverse so they are ordered in descending order
-        // Collections.reverse(values);
-
-
-        // for (DriverInfo value : values) {
-
-        //     context.write(value.getDriverID(), value.getAvgErrorRatio());
-
-            
-        //     logger.info("TopKReducer - Top-5 Drivers are:  " + value.getDriverID() + "  ErrorRatio:"+ value.getAvgErrorRatio() );
-        // }
-
-        
-        // while (pq.size() > 0) {
-        //     values.add(pq.poll());
-        // }
-
-        // logger.info("values.size() is " + values.size());
-        // logger.info(values.toString());
 
         // reverse so they are ordered in descending order
-        // Collections.reverse(values);
-
-        for (DriverInfo value : topKDrivers) {
-
-            // logger.info("\nTopKReducer - Top-5 Drivers are:  " + value.getDriverID() + "  ErrorRatio:"+ value.getErrorRatio() );
+        Collections.reverse(values);
 
 
-            /* Task 2  */
+        
+
+        /* Task 2 */
+
+            for (DriverInfo value : values) {
+
+                logger.info("\nTopKReducer - Top-5 Drivers are:  " + value.getDriverID() + "  ErrorRatio:"+ value.getErrorRatio() );
+
+
                 context.write(value.getDriverID(), new FloatWritable(value.getErrorRatio() * 100));
 
-            /* Task 3 */
-                // context.write(value.getDriverID(), new FloatWritable(value.getErrorRatio() * 100));
+            } 
 
-        }   
+        /* Task 3  */
+            // for (DriverInfo value : values) {
+
+            //     context.write(value.getDriverID(), new FloatWritable((float) value.getErrorRatio() * 100));
+
+                
+            //     logger.info("TopKReducer - Top-10 Drivers are:  " + value.getDriverID() + "  ErrorRatio:"+ value.getErrorRatio() );
+            // }  
     }
 }

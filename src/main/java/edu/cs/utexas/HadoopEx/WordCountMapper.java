@@ -66,7 +66,7 @@ public class WordCountMapper extends Mapper<Object, Text, Text, IntPairWritable>
 					// return;
 			// logger.info("whattttttt");
 			
-			/* Task 2 and 3 */
+			/* Task 2  */
 			error = 1;
 		}
 
@@ -76,17 +76,18 @@ public class WordCountMapper extends Mapper<Object, Text, Text, IntPairWritable>
 
 
 		/* Task 2 */	
-		// IntPairWritable dataPair = new IntPairWritable(error, trip);
-		// word.set(parsedText[0]);
-		// context.write(word, dataPair); 
+		IntPairWritable dataPair = new IntPairWritable(error, trip);
+		word.set(parsedText[0]);
+		context.write(word, dataPair); 
 
 
 		/* Task 3  */
-			float amount = Float.parseFloat(parsedText[16]);
-			int seconds = Integer.parseInt(parsedText[4]);
-			// logger.info("Driver: " + key.toString() +  ",Amount: " + amount + " seconds: " + seconds);
-			IntPairWritable moneyPair = new IntPairWritable(amount, seconds);
-			context.write(word, moneyPair); 
+			// float amount = Float.parseFloat(parsedText[16]);
+			// int seconds = Integer.parseInt(parsedText[4]);
+			// // logger.info("Driver: " + key.toString() +  ",Amount: " + amount + " seconds: " + seconds);
+			// IntPairWritable moneyPair = new IntPairWritable(amount, seconds);
+			// word.set(parsedText[1]);
+			// context.write(word, moneyPair); 
 	}
 
 	// Helper function to check if any of the GPS coordinates contain errors (zeros or empty strings)

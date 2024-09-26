@@ -59,32 +59,32 @@ public class IntPairWritable implements Writable {
     public void write(DataOutput out) throws IOException {
 
        /* Task 2 */
-            // out.writeInt(errors);
-            // out.writeInt(trips);
+            out.writeInt(errors);
+            out.writeInt(trips);
 
         /* Task 3 */
-            out.writeFloat(bank);
-            out.writeInt(seconds);
+            // out.writeFloat(bank);
+            // out.writeInt(seconds);
     }
 
     // Deserialization
     @Override
     public void readFields(DataInput in) throws IOException {
         /* Task 2 */
-            // errors = in.readInt();
-            // trips = in.readInt();
+            errors = in.readInt();
+            trips = in.readInt();
 
         /* Task 3 */
-            bank = in.readFloat();
-            seconds = in.readInt();
+            // bank = in.readFloat();
+            // seconds = in.readInt();
     }
 
     @Override
     public String toString() {
         /* Task 2  */
-            // return errors + "-" + trips;
+            return errors + "-" + trips;
         
         /* Task 3 */
-            return bank + "-" + seconds;
+            // return bank + "-" + seconds;
     }
 }
