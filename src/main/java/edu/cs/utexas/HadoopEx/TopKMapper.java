@@ -13,11 +13,12 @@ import java.util.HashMap;
 import java.util.Map;
 // import edu.cs.utexas.HadoopEx.MapReduceTest.Map;
 
-public class TopKMapper extends Mapper<Text, Text, Text, FloatWritable> {
+public class TopKMapper extends Mapper<Text, Text, Text, IntPairWritable> {
     private Logger logger = Logger.getLogger(TopKMapper.class);
 
 
 	private PriorityQueue<DriverInfo> pq = new PriorityQueue<>(5);
+	// int count =0;
 
 	/**
 	 * Reads in results from the first job and filters the topk results
@@ -30,45 +31,38 @@ public class TopKMapper extends Mapper<Text, Text, Text, FloatWritable> {
 
 		/* Task 2 */
 
-			String [] parts = value.toString().split("-");
+			// String [] parts = value.toString().split("-");
 
-			int gpsErrors = Integer.parseInt(parts[0]);
-			int trips = Integer.parseInt(parts[1]);
-			// logger.info("GPS: " + gpsErrors + "Trips: "+ trips);
-
-
-			// Calculate error ratio
-			float errorRatio = (float) gpsErrors/ trips;
-
-			// DriverInfo newDriver = new DriverInfo(new Text(key), new FloatWritable(errorRatio));
-
-
-			// boolean found = false;
-			// for (DriverInfo driver : pq) {
-			// 	if (driver.getDriverID().equals(newDriver.getDriverID())) {
-			// 		driver.updateTotals(gpsErrors, trips);  // Assuming updateTotals is a method that adds totals
-			// 		found = true;
-			// 		break;
-			// 	}
-			// }
+			// int gpsErrors = Integer.parseInt(parts[0]);
+			// int trips = Integer.parseInt(parts[1]);
 		
-			// // If the driver is not in the priority queue, add it
-			// if (!found) {
-			// 	pq.add(newDriver);
+
+			// DriverInfo newDriver = new DriverInfo(new Text(key), new IntPairWritable(gpsErrors, trips));
+
+			// pq.add(newDriver);
+
+
+			// if (pq.size() > 5){
+			// 	pq.poll();
 			// }
-
-			pq.add(new DriverInfo(new Text(key), new FloatWritable(errorRatio)));
-
-			if (pq.size() > 5) {
-				pq.poll();
-			}
 
 			
 		/* Task 3 */
 
-			// if (pq.size() > 10){
-			// 	pq.poll();
-			// }
+			String [] parts = value.toString().split("-");
+
+			float totalBank = Float.parseFloat(parts[0]);
+			int totalSeconds = Integer.parseInt(parts[1]);
+
+
+			DriverInfo newDriver = new DriverInfo(new Text(key), new IntPairWritable(totalBank, totalSeconds));
+
+			pq.add(newDriver);
+			
+
+			if (pq.size() > 10){
+				pq.poll();
+			}
 
 	}
 
@@ -77,17 +71,20 @@ public class TopKMapper extends Mapper<Text, Text, Text, FloatWritable> {
 		while (pq.size() > 0) {
 			DriverInfo driverInfo = pq.poll();
 
-			logger.info("Driver: " + driverInfo.getDriverID() + " AvgErrorRate: " + driverInfo.getAvgErrorRatio());
+			
+			// logger.info(count++);
+			
 
 			/* Task 2 */
-			context.write(driverInfo.getDriverID(), driverInfo.getAvgErrorRatio());		
+
+				// int currentRatio = driverInfo.getTotalTrips() != 0 ? (int) (((float) driverInfo.getTotalErrors() / driverInfo.getTotalTrips()) * 100) : 0;
+
+				// logger.info("Driver: " + driverInfo.getDriverID() + " AvgErrorRate: " + currentRatio);
+				// context.write(driverInfo.getDriverID(), new IntPairWritable(driverInfo.getTotalErrors(), driverInfo.getTotalTrips()));		
 
 			/* Task 3  */
-				// 	float totalBank = driverInfo.getTotalBank();
-				//     int totalSeconds = driverInfo.getTotalSeconds();
-				// 	float earningPerMin = totalBank / (totalSeconds / 60);
 				
-				//     context.write(driverInfo.getDriverID(), new FloatWritable(earningPerMin));
+				context.write(driverInfo.getDriverID(), new IntPairWritable(driverInfo.getTotalBank(), driverInfo.getTotalSeconds()));
 				// logger.info("TopKMapper PQ Status: " + pq.toString());
 			}
 	}
